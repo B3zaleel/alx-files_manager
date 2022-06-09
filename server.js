@@ -5,6 +5,7 @@ const server = express();
 
 consign()
   .include('routes')
+  .then('libs/middlewares.js')
   .then('libs/boot.js')
   .into(server);
 
