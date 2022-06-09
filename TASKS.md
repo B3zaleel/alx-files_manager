@@ -140,7 +140,7 @@
 + [ ] 7. **File publish/unpublish**
   + In the file [`routes/index.js`](routes/index.js), add 2 new endpoints:
     + `PUT /files/:id/publish` => `FilesController.putPublish`.
-    + `PUT /files/:id/publish` => `FilesController.putUnpublish`.
+    + `PUT /files/:id/unpublish` => `FilesController.putUnpublish`.
   + In the file [`controllers/FilesController.js`](controllers/FilesController.js), add the 2 new endpoints:
     + `PUT /files/:id/publish` should set `isPublic` to `true` on the file document based on the ID:
       + Retrieve the user based on the token:
