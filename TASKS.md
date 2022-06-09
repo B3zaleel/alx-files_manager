@@ -1,6 +1,6 @@
 # Tasks To Complete
 
-+ [ ] 0. **Redis utils**
++ [x] 0. **Redis utils**
   + Inside the folder [`utils`](utils), create a file [`redis.js`](utils/redis.js) that contains the class `RedisClient`.
   + `RedisClient` should have:
     + The constructor that creates a client to Redis:
@@ -11,7 +11,7 @@
     + An asynchronous function `del` that takes a string key as argument and remove the value in Redis for this key.
   + After the class definition, create and export an instance of `RedisClient` called `redisClient`.
 
-+ [ ] 1. **MongoDB utils**
++ [x] 1. **MongoDB utils**
   + Inside the folder [`utils`](utils), create a file [`db.js`](db.js) that contains the class `DBClient`.
   + `DBClient` should have:
     + The constructor that creates a client to MongoDB:
@@ -23,7 +23,7 @@
     + An asynchronous function `nbFiles` that returns the number of documents in the collection `files`.
   + After the class definition, create and export an instance of `DBClient` called `dbClient`.
 
-+ [ ] 2. **First API**
++ [x] 2. **First API**
   + Inside [`server.js`](server.js), create the Express server:
     + It should listen on the port set by the environment variable `PORT` or by default 5000.
     + It should load all routes from the file [`routes/index.js`](routes/index.js).
