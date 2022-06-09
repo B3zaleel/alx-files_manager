@@ -4,8 +4,8 @@ import consign from 'consign';
 const server = express();
 
 consign()
-  .include('routes')
-  .then('libs/middlewares.js')
+  .include('libs/middlewares.js')
+  .then('routes')
   .then('libs/boot.js')
   .into(server);
 
