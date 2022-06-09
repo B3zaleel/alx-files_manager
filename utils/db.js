@@ -40,6 +40,22 @@ class DBClient {
   async nbFiles() {
     return this.client.db().collection('files').countDocuments();
   }
+
+  /**
+   * Retrieves a reference to the `users` collection.
+   * @returns {Promise<mongodb.Collection>}
+   */
+  async usersCollection() {
+    return this.client.db().collection('users');
+  }
+
+  /**
+   * Retrieves a reference to the `files` collection.
+   * @returns {Promise<mongodb.Collection>}
+   */
+  async filesCollection() {
+    return this.client.db().collection('files');
+  }
 }
 
 export const dbClient = new DBClient();
