@@ -2,6 +2,8 @@
 /* eslint-disable no-unused-vars */
 import { tmpdir } from 'os';
 import { promisify } from 'util';
+import Queue from 'bull/lib/queue';
+import Job from 'bull/lib/job';
 import { v4 as uuidv4 } from 'uuid';
 import { mkdir, writeFile, stat } from 'fs';
 import { join as joinPath } from 'path';
@@ -23,6 +25,7 @@ const mkDirAsync = promisify(mkdir);
 const writeFileAsync = promisify(writeFile);
 const statAsync = promisify(stat);
 const MAX_FILES_PER_PAGE = 20;
+const fileQueue = new Queue('thumbnail generation');
 
 export default class FilesController {
   /**
@@ -79,8 +82,14 @@ export default class FilesController {
     }
     const insertionInfo = await (await dbClient.filesCollection())
       .insertOne(newFile);
+    const fileId = insertionInfo.insertedId.toString();
+    // start thumbnail generation worker
+    if (type === VALID_FILE_TYPES.image) {
+      const jobName = `Image thumbnail [${userId}-${fileId}]`;
+      fileQueue.add(jobName, { userId, fileId });
+    }
     res.status(201).json({
-      id: insertionInfo.insertedId.toString(),
+      id: fileId,
       userId,
       name,
       type,
