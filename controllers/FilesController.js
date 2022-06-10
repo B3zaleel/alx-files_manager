@@ -201,7 +201,7 @@ export default class FilesController {
   static async getFile(req, res) {
     const user = await getUserFromXToken(req);
     const { id } = req.params;
-    const size = req.query.size;
+    const size = req.query.size || null;
     const userId = user ? user._id.toString() : '';
     const fileFilter = { _id: new mongoDBCore.BSON.ObjectId(id) };
     const file = await (await dbClient.filesCollection())
