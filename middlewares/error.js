@@ -29,5 +29,4 @@ export const errorResponse = (err, req, res, next) => {
   res.status(500).json({
     error: err ? err.message || err.toString() : defaultMsg,
   });
-  next();
 };
