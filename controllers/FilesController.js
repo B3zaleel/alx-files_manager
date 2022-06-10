@@ -19,6 +19,7 @@ const ROOT_FOLDER_ID = 0;
 const DEFAULT_ROOT_FOLDER = 'files_manager';
 const mkDirAsync = promisify(mkdir);
 const writeFileAsync = promisify(writeFile);
+const MAX_FILES_PER_PAGE = 20;
 
 export default class FilesController {
   /**
@@ -108,8 +109,33 @@ export default class FilesController {
     });
   }
 
-  static getIndex(req, res) {
-    res.status(200).json({});
+  /**
+   * Retrieves files associated with a specific user.
+   * @param {Request} req The Express request object.
+   * @param {Response} res The Express response object.
+   */
+  static async getIndex(req, res) {
+    const { user } = req;
+    const parentId = req.query.parentId || ROOT_FOLDER_ID;
+    const page = Number.parseInt(req.query.page || 0, 10);
+    const userId = user._id.toString();
+    const filesFilter = { userId, parentId };
+
+    const files = await (await dbClient.filesCollection())
+      .aggregate([
+        { $match: filesFilter },
+        { $skip: page * MAX_FILES_PER_PAGE },
+        { $limit: MAX_FILES_PER_PAGE },
+      ]);
+    const pageFiles = files.map((file) => ({
+      id: file._id.toString(),
+      userId: file.userId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId,
+    }));
+    res.status(200).json(pageFiles);
   }
 
   static async putPublish(req, res) {
