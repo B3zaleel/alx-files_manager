@@ -115,7 +115,7 @@
           + `localPath`: for a `type=file|image`, the absolute path to the file save in local.
         + Return the new file with a status code 201.
 
-+ [ ] 6. **Get and list file**
++ [x] 6. **Get and list file**
   + In the file [`routes/index.js`](routes/index.js), add 2 new endpoints:
     + `GET /files/:id` => `FilesController.getShow`.
     + `GET /files` => `FilesController.getIndex`.
@@ -157,7 +157,7 @@
         + Update the value of `isPublic` to `false`.
         + And return the file document with a status code 200.
 
-+ [ ] 8. **File data**
++ [x] 8. **File data**
   + In the file [`routes/index.js`](routes/index.js), add one new endpoint:
     + `GET /files/:id/data` => `FilesController.getFile`.
   + In the file [`controllers/FilesController.js`](controllers/FilesController.js), add the new endpoint:
