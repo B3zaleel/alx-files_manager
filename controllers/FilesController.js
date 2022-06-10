@@ -201,6 +201,7 @@ export default class FilesController {
   static async getFile(req, res) {
     const user = await getUserFromXToken(req);
     const { id } = req.params;
+    const size = req.query.size;
     const userId = user ? user._id.toString() : '';
     const fileFilter = { _id: new mongoDBCore.BSON.ObjectId(id) };
     const file = await (await dbClient.filesCollection())
@@ -212,12 +213,16 @@ export default class FilesController {
     if (file.type === VALID_FILE_TYPES.folder) {
       throw new APIError(400, 'A folder doesn\'t have content');
     }
-    const fileInfo = await statAsync(file.localPath);
+    let filePath = file.localPath;
+    if (size) {
+      filePath = `${file.localPath}_${size}`;
+    }
+    const fileInfo = await statAsync(filePath);
     if (!fileInfo.isFile()) {
       throw new APIError(404, 'Not found');
     }
     res.status(200).sendFile(
-      file.localPath,
+      filePath,
       { 'Content-Type': contentType(file.name) },
     );
   }
