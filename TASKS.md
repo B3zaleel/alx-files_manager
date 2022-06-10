@@ -170,7 +170,7 @@
         + By using the module `mime-types`, get the [MIME-type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) based on the `name` of the file.
         + Return the content of the file with the correct MIME-type.
 
-+ [ ] 9. **Image Thumbnails**
++ [x] 9. **Image Thumbnails**
   + Update the endpoint `POST /files` endpoint to start a background processing for generating thumbnails for a file of type `image`:
     + Create a `Bull` queue `fileQueue`.
     + When a new image is stored (in local and in DB), add a job to this queue with the `userId` and `fileId`.
