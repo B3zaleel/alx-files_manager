@@ -21,6 +21,7 @@
     "chai-http": "^4.3.0",
     "consign": "^0.1.6",
     "express": "^4.17.1",
+    "googleapis": "^101.0.0",
     "image-thumbnail": "^1.0.10",
     "mime-types": "^2.1.27",
     "mongodb": "^3.5.9",
