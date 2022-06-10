@@ -1,6 +1,10 @@
+/* eslint-disable import/no-named-as-default */
 import sha1 from 'sha1';
+import Queue from 'bull/lib/queue';
 import dbClient from '../utils/db';
 import { APIError } from '../middlewares/error';
+
+const userQueue = new Queue('email sending');
 
 export default class UsersController {
   static postNew(req, res) {
@@ -21,11 +25,13 @@ export default class UsersController {
           res.status(400).json({ error: 'Already exist' });
           return;
         }
-        const user = await usersCollection.insertOne({
+        const insertionInfo = await usersCollection.insertOne({
           email,
           password: sha1(password),
         });
-        res.status(201).json({ email, id: user.insertedId.toString() });
+        const userId = insertionInfo.insertedId.toString();
+        userQueue.add(`Welcome mail [${userId}]`, { userId });
+        res.status(201).json({ email, id: userId });
       });
   }
 
