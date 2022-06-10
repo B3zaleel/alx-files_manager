@@ -112,8 +112,30 @@ export default class FilesController {
     res.status(200).json({});
   }
 
-  static putPublish(req, res) {
-    res.status(200).json({});
+  static async putPublish(req, res) {
+    const { user } = req;
+    const { id } = req.params;
+    const userId = user._id.toString();
+    const fileFilter = {
+      _id: new mongoDBCore.BSON.ObjectId(id),
+      userId,
+    };
+    const file = await (await dbClient.filesCollection())
+      .findOne(fileFilter);
+
+    if (!file) {
+      throw new APIError(404, 'Not found');
+    }
+    await (await dbClient.filesCollection())
+      .updateOne(fileFilter, { isPublic: true });
+    res.status(200).json({
+      id,
+      userId,
+      name: file.name,
+      type: file.type,
+      isPublic: true,
+      parentId: file.parentId,
+    });
   }
 
   static putUnpublish(req, res) {
