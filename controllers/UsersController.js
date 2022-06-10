@@ -7,7 +7,7 @@ import { APIError } from '../middlewares/error';
 const userQueue = new Queue('email sending');
 
 export default class UsersController {
-  static postNew(req, res) {
+  static async postNew(req, res) {
     const email = `${req.body && req.body.email ? req.body.email : ''}`;
     const password = `${req.body && req.body.password ? req.body.password : ''}`;
 
@@ -17,22 +17,17 @@ export default class UsersController {
     if (password.trim().length === 0) {
       throw new APIError(400, 'Missing password');
     }
-    dbClient.usersCollection()
-      .then(async (usersCollection) => {
-        const tmpUser = await usersCollection.findOne({ email });
+    const user = await (await dbClient.usersCollection()).findOne({ email });
 
-        if (tmpUser) {
-          res.status(400).json({ error: 'Already exist' });
-          return;
-        }
-        const insertionInfo = await usersCollection.insertOne({
-          email,
-          password: sha1(password),
-        });
-        const userId = insertionInfo.insertedId.toString();
-        userQueue.add(`Welcome mail [${userId}]`, { userId });
-        res.status(201).json({ email, id: userId });
-      });
+    if (user) {
+      throw new APIError(400, 'Already exist');
+    }
+    const insertionInfo = await (await dbClient.usersCollection())
+      .insertOne({ email, password: sha1(password) });
+    const userId = insertionInfo.insertedId.toString();
+
+    userQueue.add(`Welcome mail [${userId}]`, { userId });
+    res.status(201).json({ email, id: userId });
   }
 
   static async getMe(req, res) {
