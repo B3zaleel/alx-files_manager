@@ -8,6 +8,7 @@ import { join as joinPath } from 'path';
 import { Request, Response } from 'express';
 import mongoDBCore from 'mongodb/lib/core';
 import dbClient from '../utils/db';
+import { APIError } from '../middlewares/error';
 
 const VALID_FILE_TYPES = {
   folder: 'folder',
@@ -89,8 +90,27 @@ export default class FilesController {
     });
   }
 
-  static getShow(req, res) {
-    res.status(200).json({});
+  static async getShow(req, res) {
+    const { user } = req;
+    const { id } = req.params;
+    const userId = user._id.toString();
+    const file = await (await dbClient.filesCollection())
+      .findOne({
+        _id: new mongoDBCore.BSON.ObjectId(id),
+        userId,
+      });
+
+    if (!file) {
+      throw new APIError(404, 'Not found');
+    }
+    res.status(200).json({
+      id,
+      userId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId,
+    });
   }
 
   static getIndex(req, res) {
