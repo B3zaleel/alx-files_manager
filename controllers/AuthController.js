@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 import { v4 } from 'uuid';
 import redisClient from '../utils/redis';
-import { getUserFromAuthorization } from '../utils/auth';
+import { getUserFromAuthorization, getUserFromXToken } from '../utils/auth';
 
 export default class AuthController {
   static async getConnect(req, res) {
@@ -16,7 +16,15 @@ export default class AuthController {
     res.status(200).json({ token });
   }
 
-  static getDisconnect(req, res) {
-    res.status(200).json({});
+  static async getDisconnect(req, res) {
+    const user = await getUserFromXToken(req);
+
+    if (!user) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+    const token = req.headers['X-Token'];
+    await redisClient.del(`auth_${token}`);
+    res.status(204).json({});
   }
 }
