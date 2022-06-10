@@ -35,28 +35,23 @@ export default class FilesController {
     const base64Data = req.body && req.body.data ? req.body.data : '';
 
     if (name.length === 0) {
-      res.status(400).json({ error: 'Missing name' });
-      return;
+      throw new APIError(400, 'Missing name');
     }
     if (!Object.values(VALID_FILE_TYPES).includes(type)) {
-      res.status(400).json({ error: 'Missing type' });
-      return;
+      throw new APIError(400, 'Missing type');
     }
     if (!req.body.data && type !== VALID_FILE_TYPES.folder) {
-      res.status(400).json({ error: 'Missing data' });
-      return;
+      throw new APIError(400, 'Missing data');
     }
     if (parentId !== ROOT_FOLDER_ID) {
       const file = await (await dbClient.filesCollection())
         .findOne({ _id: new mongoDBCore.BSON.ObjectId(parentId) });
 
       if (!file) {
-        res.status(400).json({ error: 'Parent not found' });
-        return;
+        throw new APIError(400, 'Parent not found');
       }
       if (file.type !== VALID_FILE_TYPES.folder) {
-        res.status(400).json({ error: 'Parent is not a folder' });
-        return;
+        throw new APIError(400, 'Parent is not a folder');
       }
     }
     const userId = user._id.toString();
