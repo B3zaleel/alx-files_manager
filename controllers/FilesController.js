@@ -3,7 +3,6 @@
 import { tmpdir } from 'os';
 import { promisify } from 'util';
 import Queue from 'bull/lib/queue';
-import Job from 'bull/lib/job';
 import { v4 as uuidv4 } from 'uuid';
 import { mkdir, writeFile, stat } from 'fs';
 import { join as joinPath } from 'path';
