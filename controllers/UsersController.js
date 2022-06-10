@@ -27,7 +27,7 @@ export default class UsersController {
           email,
           password: sha1(password),
         });
-        res.status(200).json({ email, id: user.insertedId.toString() });
+        res.status(201).json({ email, id: user.insertedId.toString() });
       });
   }
 
