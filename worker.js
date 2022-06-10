@@ -8,6 +8,7 @@ import dbClient from './utils/db';
 
 const writeFileAsync = promisify(writeFile);
 const fileQueue = new Queue('thumbnail generation');
+const userQueue = new Queue('email sending');
 
 /**
  * Generates the thumbnail of an image with a given width size.
@@ -43,4 +44,20 @@ fileQueue.process(async (job, done) => {
     .then(() => {
       done();
     });
+});
+
+userQueue.process(async (job, done) => {
+  const userId = job.data.userId || null;
+
+  if (!userId) {
+    throw new Error('Missing userId');
+  }
+  const user = await (await dbClient.usersCollection())
+    .findOne({ _id: new mongoDBCore.BSON.ObjectId(userId) });
+  if (!user) {
+    throw new Error('User not found');
+  }
+  console.log(`Welcome ${user.email}!`);
+  // TODO: Send an actual email
+  done();
 });
