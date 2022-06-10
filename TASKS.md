@@ -79,7 +79,7 @@
       + If not found, return an error `Unauthorized` with a status code 401.
       + Otherwise, return the user object (`email` and `id` only).
 
-+ [ ] 5. **First file**
++ [x] 5. **First file**
   + In the file routes/index.js, add a new endpoint:
     + `POST /files` => `FilesController.postUpload`.
   + Inside [`controllers`](controllers), add a file [`FilesController.js`](controllers/FilesController.js) that contains the new endpoint:
@@ -137,7 +137,7 @@
           + `page` query parameter starts at 0 for the first page. If equals to 1, it means it's the second page (form the 20th to the 40th), etc…
           + Pagination can be done directly by the `aggregate` of MongoDB.
 
-+ [ ] 7. **File publish/unpublish**
++ [x] 7. **File publish/unpublish**
   + In the file [`routes/index.js`](routes/index.js), add 2 new endpoints:
     + `PUT /files/:id/publish` => `FilesController.putPublish`.
     + `PUT /files/:id/unpublish` => `FilesController.putUnpublish`.
