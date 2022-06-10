@@ -36,7 +36,7 @@
       + `users` collection must be used for counting all users.
       + `files` collection must be used for counting all files.
 
-+ [ ] 3. **Create a new user**
++ [x] 3. **Create a new user**
   + Now that we have a simple API, it's time to add users to our database.
   + In the file [`routes/index.js`](routes/index.js), add a new endpoint:
     + `POST /users` => `UsersController.postNew`.
@@ -53,7 +53,7 @@
         + `email`: same as the value received.
         + `password`: `SHA1` value of the value received.
 
-+ [ ] 4. **Authenticate a user**
++ [x] 4. **Authenticate a user**
   + In the file [`routes/index.js`](routes/index.js), add 3 new endpoints:
     + `GET /connect` => `AuthController.getConnect`.
     + `GET /disconnect` => `AuthController.getDisconnect`.
