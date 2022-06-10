@@ -1,4 +1,5 @@
 import mongodb from 'mongodb';
+import Collection from 'mongodb/lib/collection';
 
 /**
  * Represents a MongoDB client.
@@ -43,7 +44,7 @@ class DBClient {
 
   /**
    * Retrieves a reference to the `users` collection.
-   * @returns {Promise<mongodb.Collection>}
+   * @returns {Promise<Collection>}
    */
   async usersCollection() {
     return this.client.db().collection('users');
@@ -51,7 +52,7 @@ class DBClient {
 
   /**
    * Retrieves a reference to the `files` collection.
-   * @returns {Promise<mongodb.Collection>}
+   * @returns {Promise<Collection>}
    */
   async filesCollection() {
     return this.client.db().collection('files');
