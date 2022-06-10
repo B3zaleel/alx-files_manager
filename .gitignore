@@ -105,3 +105,6 @@ dist
 
 # Project specific files
 .vscode/
+credentials.json
+*secret*
+token.json
