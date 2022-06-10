@@ -3,12 +3,14 @@
 import { tmpdir } from 'os';
 import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
-import { mkdir, writeFile } from 'fs';
+import { mkdir, writeFile, stat } from 'fs';
 import { join as joinPath } from 'path';
 import { Request, Response } from 'express';
+import { contentType } from 'mime-types';
 import mongoDBCore from 'mongodb/lib/core';
 import dbClient from '../utils/db';
 import { APIError } from '../middlewares/error';
+import { getUserFromXToken } from '../utils/auth';
 
 const VALID_FILE_TYPES = {
   folder: 'folder',
@@ -19,6 +21,7 @@ const ROOT_FOLDER_ID = 0;
 const DEFAULT_ROOT_FOLDER = 'files_manager';
 const mkDirAsync = promisify(mkdir);
 const writeFileAsync = promisify(writeFile);
+const statAsync = promisify(stat);
 const MAX_FILES_PER_PAGE = 20;
 
 export default class FilesController {
@@ -190,7 +193,32 @@ export default class FilesController {
     });
   }
 
-  static getFile(req, res) {
-    res.status(200).json({});
+  /**
+   * Retrieves the content of a file.
+   * @param {Request} req The Express request object.
+   * @param {Response} res The Express response object.
+   */
+  static async getFile(req, res) {
+    const user = await getUserFromXToken(req);
+    const { id } = req.params;
+    const userId = user ? user._id.toString() : '';
+    const fileFilter = { _id: new mongoDBCore.BSON.ObjectId(id) };
+    const file = await (await dbClient.filesCollection())
+      .findOne(fileFilter);
+
+    if (!file || (!file.isPublic && (file.userId !== userId))) {
+      throw new APIError(404, 'Not found');
+    }
+    if (file.type === VALID_FILE_TYPES.folder) {
+      throw new APIError(400, 'A folder doesn\'t have content');
+    }
+    const fileInfo = await statAsync(file.localPath);
+    if (!fileInfo.isFile()) {
+      throw new APIError(404, 'Not found');
+    }
+    res.status(200).sendFile(
+      file.localPath,
+      { 'Content-Type': contentType(file.name) },
+    );
   }
 }
