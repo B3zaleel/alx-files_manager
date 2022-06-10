@@ -1,6 +1,5 @@
 import sha1 from 'sha1';
 import dbClient from '../utils/db';
-import { getUserFromXToken } from '../utils/auth';
 
 export default class UsersController {
   static postNew(req, res) {
@@ -32,12 +31,8 @@ export default class UsersController {
   }
 
   static async getMe(req, res) {
-    const user = await getUserFromXToken(req);
+    const { user } = req;
 
-    if (!user) {
-      res.status(401).json({ error: 'Unauthorized' });
-      return;
-    }
     res.status(200).json({ email: user.email, id: user._id.toString() });
   }
 }
