@@ -1,5 +1,6 @@
 import sha1 from 'sha1';
 import dbClient from '../utils/db';
+import { APIError } from '../middlewares/error';
 
 export default class UsersController {
   static postNew(req, res) {
@@ -7,12 +8,10 @@ export default class UsersController {
     const password = `${req.body && req.body.password ? req.body.password : ''}`;
 
     if (email.trim().length === 0) {
-      res.status(400).json({ error: 'Missing email' });
-      return;
+      throw new APIError(400, 'Missing email');
     }
     if (password.trim().length === 0) {
-      res.status(400).json({ error: 'Missing password' });
-      return;
+      throw new APIError(400, 'Missing password');
     }
     dbClient.usersCollection()
       .then(async (usersCollection) => {
