@@ -1,5 +1,5 @@
 import mongodb from 'mongodb';
-import { config } from 'dotenv';
+import { existsSync } from 'fs';
 // eslint-disable-next-line no-unused-vars
 import Collection from 'mongodb/lib/collection';
 
@@ -12,7 +12,10 @@ class DBClient {
    */
   constructor() {
     const env = process.env.npm_lifecycle_event || 'dev';
-    config({ path: env.includes('test') ? '.env.test' : '.env' });
+    if (existsSync('.env') || existsSync('.env.test')) {
+      const dotenv = require('dotenv');
+      dotenv.config({ path: env.includes('test') ? '.env.test' : '.env' });
+    }
     const host = process.env.DB_HOST || 'localhost';
     const port = process.env.DB_PORT || 27017;
     const database = process.env.DB_DATABASE || 'files_manager';
