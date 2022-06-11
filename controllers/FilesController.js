@@ -71,11 +71,11 @@ export default class FilesController {
     // default baseDir == '/tmp/files_manager'
     // or (on Windows) '%USERPROFILE%/AppData/Local/Temp/files_manager';
     const newFile = {
-      userId,
+      userId: new mongoDBCore.BSON.ObjectId(userId),
       name,
       type,
       isPublic,
-      parentId,
+      parentId: parentId === ROOT_FOLDER_ID ? '0' : new mongoDBCore.BSON.ObjectId(parentId),
     };
     await mkDirAsync(baseDir, { recursive: true });
     if (type !== VALID_FILE_TYPES.folder) {
