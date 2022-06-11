@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 import dbClient from '../../utils/db';
 
-describe('AppController', () => {
+describe('+ AppController', () => {
   before(function (done) {
     this.timeout(10000);
     Promise.all([dbClient.usersCollection(), dbClient.filesCollection()])
@@ -13,8 +13,8 @@ describe('AppController', () => {
     setTimeout(done, 5000);
   });
 
-  describe('GET: /status', () => {
-    it('services are online', function (done) {
+  describe('+ GET: /status', () => {
+    it('+ Services are online', function (done) {
       request.get('/status')
         .expect(200)
         .end((err, res) => {
@@ -27,8 +27,8 @@ describe('AppController', () => {
     });
   });
 
-  describe('GET: /stats', () => {
-    it('correct statistics about db collections', function (done) {
+  describe('+ GET: /stats', () => {
+    it('+ Correct statistics about db collections', function (done) {
       request.get('/stats')
         .expect(200)
         .end((err, res) => {
@@ -40,7 +40,7 @@ describe('AppController', () => {
         });
     });
 
-    it('correct statistics about db collections [alt]', function (done) {
+    it('+ Correct statistics about db collections [alt]', function (done) {
       this.timeout(10000);
       Promise.all([dbClient.usersCollection(), dbClient.filesCollection()])
         .then(([usersCollection, filesCollection]) => {
