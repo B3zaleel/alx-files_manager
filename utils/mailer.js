@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import fs from 'fs';
-import 'dotenv/config';
 import readline from 'readline';
 import { promisify } from 'util';
 import mimeMessage from 'mime-message';
