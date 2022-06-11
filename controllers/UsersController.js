@@ -2,7 +2,6 @@
 import sha1 from 'sha1';
 import Queue from 'bull/lib/queue';
 import dbClient from '../utils/db';
-import { APIError } from '../middlewares/error';
 
 const userQueue = new Queue('email sending');
 
@@ -12,15 +11,18 @@ export default class UsersController {
     const password = req.body ? req.body.password : null;
 
     if (!email) {
-      throw new APIError(400, 'Missing email');
+      res.status(400).json({ error: 'Missing email' });
+      return;
     }
     if (!password) {
-      throw new APIError(400, 'Missing password');
+      res.status(400).json({ error: 'Missing password' });
+      return;
     }
     const user = await (await dbClient.usersCollection()).findOne({ email });
 
     if (user) {
-      throw new APIError(400, 'Already exist');
+      res.status(400).json({ error: 'Already exist' });
+      return;
     }
     const insertionInfo = await (await dbClient.usersCollection())
       .insertOne({ email, password: sha1(password) });
