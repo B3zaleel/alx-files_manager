@@ -24,6 +24,29 @@ const writeFileAsync = promisify(writeFile);
 const statAsync = promisify(stat);
 const MAX_FILES_PER_PAGE = 20;
 const fileQueue = new Queue('thumbnail generation');
+const NULL_ID = Buffer.alloc(24, '0').toString('utf-8');
+const isValidId = (id) => {
+  const size = 24;
+  let i = 0;
+  const charRanges = [
+    [48, 57], // 0 - 9
+    [97, 102], // a - f
+    [65, 70], // A - F
+  ];
+  if (typeof id !== 'string' || id.length != size) {
+    return false;
+  }
+  while (i < size) {
+    const c = id[i];
+    const code = c.charCodeAt(0);
+
+    if (!charRanges.some((range) => code >= range[0] && code <= range[1])) {
+      return false;
+    }
+    i += 1;
+  }
+  return true;
+};
 
 export default class FilesController {
   /**
@@ -53,7 +76,9 @@ export default class FilesController {
     }
     if (parentId !== ROOT_FOLDER_ID) {
       const file = await (await dbClient.filesCollection())
-        .findOne({ _id: new mongoDBCore.BSON.ObjectId(parentId) });
+        .findOne({
+          _id: new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
+        });
 
       if (!file) {
         res.status(400).json({ error: 'Parent not found' });
@@ -107,8 +132,8 @@ export default class FilesController {
     const userId = user._id.toString();
     const file = await (await dbClient.filesCollection())
       .findOne({
-        _id: new mongoDBCore.BSON.ObjectId(id),
-        userId: new mongoDBCore.BSON.ObjectId(userId),
+        _id: new mongoDBCore.BSON.ObjectId(isValidId(id) ? id : NULL_ID),
+        userId: new mongoDBCore.BSON.ObjectId(isValidId(userId) ? userId : NULL_ID),
       });
 
     if (!file) {
@@ -141,7 +166,7 @@ export default class FilesController {
       userId: new mongoDBCore.BSON.ObjectId(userId),
       parentId: (parentId === ROOT_FOLDER_ID) || (parentId === ROOT_FOLDER_ID.toString())
         ? ROOT_FOLDER_ID.toString()
-        : new mongoDBCore.BSON.ObjectId(parentId),
+        : new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
     };
 
     const files = await (await dbClient.filesCollection())
@@ -168,8 +193,8 @@ export default class FilesController {
     const { id } = req.params;
     const userId = user._id.toString();
     const fileFilter = {
-      _id: new mongoDBCore.BSON.ObjectId(id),
-      userId: new mongoDBCore.BSON.ObjectId(userId),
+      _id: new mongoDBCore.BSON.ObjectId(isValidId(id) ? id : NULL_ID),
+      userId: new mongoDBCore.BSON.ObjectId(isValidId(userId) ? userId : NULL_ID),
     };
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
@@ -197,8 +222,8 @@ export default class FilesController {
     const { id } = req.params;
     const userId = user._id.toString();
     const fileFilter = {
-      _id: new mongoDBCore.BSON.ObjectId(id),
-      userId: new mongoDBCore.BSON.ObjectId(userId),
+      _id: new mongoDBCore.BSON.ObjectId(isValidId(id) ? id : NULL_ID),
+      userId: new mongoDBCore.BSON.ObjectId(isValidId(userId) ? userId : NULL_ID),
     };
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
@@ -231,7 +256,9 @@ export default class FilesController {
     const { id } = req.params;
     const size = req.query.size || null;
     const userId = user ? user._id.toString() : '';
-    const fileFilter = { _id: new mongoDBCore.BSON.ObjectId(id) };
+    const fileFilter = {
+      _id: new mongoDBCore.BSON.ObjectId(isValidId(id) ? id : NULL_ID),
+    };
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
 
