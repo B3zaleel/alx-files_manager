@@ -12,7 +12,7 @@ import redisClient from './redis';
  * @returns {Promise<{_id: ObjectId, email: string, password: string}>}
  */
 export const getUserFromAuthorization = async (req) => {
-  const { authorization } = req.headers;
+  const authorization = req.headers.authorization || null;
 
   if (!authorization) {
     return null;
@@ -51,11 +51,7 @@ export const getUserFromXToken = async (req) => {
   }
   const user = await (await dbClient.usersCollection())
     .findOne({ _id: new mongoDBCore.BSON.ObjectId(userId) });
-
-  if (!user) {
-    return null;
-  }
-  return user;
+  return user || null;
 };
 
 export default {
