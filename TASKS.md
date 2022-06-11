@@ -60,7 +60,7 @@
     + `GET /users/me` => `UserController.getMe`.
   + Inside [`controllers`](controllers), add a file [`AuthController.js`](controllers/AuthController.js) that contains new endpoints:
     + `GET /connect` should sign-in the user by generating a new authentication token:
-      + By using the header `Authorization` and the technique of the Basic auth (Base64 of the `<email>:<password>`), find the user associate to this email and with this password (reminder: we are storing the SHA1 of the password).
+      + By using the header `Authorization` and the technique of the Basic auth (Base64 of the `<email>:<password>`), find the user associated to this email and with this password (reminder: we are storing the SHA1 of the password).
       + If no user has been found, return an error `Unauthorized` with a status code 401
       + Otherwise:
         + Generate a random string (using `uuidv4`) as token.
