@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import chai, { request } from 'chai';
+import chai from 'chai';
 import api from '../server';
 
 global.app = api;
