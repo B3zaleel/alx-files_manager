@@ -31,7 +31,6 @@ describe('+ AuthController', () => {
           })
           .catch((deleteErr) => done(deleteErr));
       }).catch((connectErr) => done(connectErr));
-    setTimeout(done, 5000);
   });
 
   describe('+ GET: /connect', () => {
