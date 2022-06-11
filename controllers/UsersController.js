@@ -8,13 +8,13 @@ const userQueue = new Queue('email sending');
 
 export default class UsersController {
   static async postNew(req, res) {
-    const email = `${req.body && req.body.email ? req.body.email : ''}`;
-    const password = `${req.body && req.body.password ? req.body.password : ''}`;
+    const email = req.body ? req.body.email : null;
+    const password = req.body ? req.body.password : null;
 
-    if (email.trim().length === 0) {
+    if (!email) {
       throw new APIError(400, 'Missing email');
     }
-    if (password.trim().length === 0) {
+    if (!password) {
       throw new APIError(400, 'Missing password');
     }
     const user = await (await dbClient.usersCollection()).findOne({ email });
