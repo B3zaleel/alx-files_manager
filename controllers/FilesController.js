@@ -108,7 +108,7 @@ export default class FilesController {
     const file = await (await dbClient.filesCollection())
       .findOne({
         _id: new mongoDBCore.BSON.ObjectId(id),
-        userId,
+        userId: new mongoDBCore.BSON.ObjectId(userId),
       });
 
     if (!file) {
@@ -121,7 +121,9 @@ export default class FilesController {
       name: file.name,
       type: file.type,
       isPublic: file.isPublic,
-      parentId: file.parentId,
+      parentId: file.parentId === ROOT_FOLDER_ID.toString()
+        ? 0
+        : file.parentId.toString(),
     });
   }
 
@@ -135,7 +137,12 @@ export default class FilesController {
     const parentId = req.query.parentId || ROOT_FOLDER_ID;
     const page = Number.parseInt(req.query.page || 0, 10);
     const userId = user._id.toString();
-    const filesFilter = { userId, parentId };
+    const filesFilter = {
+      userId: new mongoDBCore.BSON.ObjectId(userId),
+      parentId: (parentId === ROOT_FOLDER_ID) || (parentId === ROOT_FOLDER_ID.toString())
+        ? ROOT_FOLDER_ID.toString()
+        : new mongoDBCore.BSON.ObjectId(parentId),
+    };
 
     const files = await (await dbClient.filesCollection())
       .aggregate([
@@ -145,11 +152,13 @@ export default class FilesController {
       ]);
     const pageFiles = files.map((file) => ({
       id: file._id.toString(),
-      userId: file.userId,
+      userId: file.userId.toString(),
       name: file.name,
       type: file.type,
       isPublic: file.isPublic,
-      parentId: file.parentId,
+      parentId: file.parentId === ROOT_FOLDER_ID.toString()
+        ? 0
+        : file.parentId.toString(),
     }));
     res.status(200).json(pageFiles);
   }
@@ -160,7 +169,7 @@ export default class FilesController {
     const userId = user._id.toString();
     const fileFilter = {
       _id: new mongoDBCore.BSON.ObjectId(id),
-      userId,
+      userId: new mongoDBCore.BSON.ObjectId(userId),
     };
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
@@ -177,7 +186,9 @@ export default class FilesController {
       name: file.name,
       type: file.type,
       isPublic: true,
-      parentId: file.parentId,
+      parentId: file.parentId === ROOT_FOLDER_ID.toString()
+        ? 0
+        : file.parentId.toString(),
     });
   }
 
@@ -187,7 +198,7 @@ export default class FilesController {
     const userId = user._id.toString();
     const fileFilter = {
       _id: new mongoDBCore.BSON.ObjectId(id),
-      userId,
+      userId: new mongoDBCore.BSON.ObjectId(userId),
     };
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
@@ -204,7 +215,9 @@ export default class FilesController {
       name: file.name,
       type: file.type,
       isPublic: false,
-      parentId: file.parentId,
+      parentId: file.parentId === ROOT_FOLDER_ID.toString()
+        ? 0
+        : file.parentId.toString(),
     });
   }
 
