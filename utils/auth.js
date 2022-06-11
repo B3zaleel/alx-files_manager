@@ -40,7 +40,7 @@ export const getUserFromAuthorization = async (req) => {
  * @returns {Promise<{_id: ObjectId, email: string, password: string}>}
  */
 export const getUserFromXToken = async (req) => {
-  const token = req.headers['X-Token'];
+  const token = req.headers['x-token'];
 
   if (!token) {
     return null;
