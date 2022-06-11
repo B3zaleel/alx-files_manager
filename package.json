@@ -19,7 +19,6 @@
   "dependencies": {
     "bull": "^3.16.0",
     "chai-http": "^4.3.0",
-    "consign": "^0.1.6",
     "dotenv": "^16.0.1",
     "express": "^4.17.1",
     "googleapis": "^101.0.0",
