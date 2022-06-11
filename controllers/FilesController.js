@@ -33,17 +33,17 @@ export default class FilesController {
    */
   static async postUpload(req, res) {
     const { user } = req;
-    const name = `${req.body && req.body.name ? req.body.name : ''}`.trim();
-    const type = `${req.body && req.body.type ? req.body.type : ''}`.trim();
+    const name = req.body ? req.body.name : null;
+    const type = req.body ? req.body.type : null;
     const parentId = req.body && req.body.parentId ? req.body.parentId : ROOT_FOLDER_ID;
     const isPublic = req.body && req.body.isPublic ? req.body.isPublic : false;
     const base64Data = req.body && req.body.data ? req.body.data : '';
 
-    if (name.length === 0) {
+    if (!name) {
       res.status(400).json({ error: 'Missing name' });
       return;
     }
-    if (!Object.values(VALID_FILE_TYPES).includes(type)) {
+    if (!type || !Object.values(VALID_FILE_TYPES).includes(type)) {
       res.status(400).json({ error: 'Missing type' });
       return;
     }
