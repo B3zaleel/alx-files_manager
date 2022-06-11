@@ -13,15 +13,15 @@ describe('dbClient utility', () => {
     setTimeout(done, 5000);
   });
 
-  it('is alive', () => {
+  it('client is alive', () => {
     expect(dbClient.isAlive()).to.equal(true);
   });
 
-  it('nbUsers function', async () => {
+  it('nbUsers are 0', async () => {
     expect(await dbClient.nbUsers()).to.equal(0);
   });
 
-  it('nbFiles function', async () => {
+  it('nbFiles are 0', async () => {
     expect(await dbClient.nbFiles()).to.equal(0);
   });
 });
