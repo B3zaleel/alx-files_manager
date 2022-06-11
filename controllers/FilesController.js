@@ -10,7 +10,6 @@ import { Request, Response } from 'express';
 import { contentType } from 'mime-types';
 import mongoDBCore from 'mongodb/lib/core';
 import dbClient from '../utils/db';
-import { APIError } from '../middlewares/error';
 import { getUserFromXToken } from '../utils/auth';
 
 const VALID_FILE_TYPES = {
@@ -41,23 +40,28 @@ export default class FilesController {
     const base64Data = req.body && req.body.data ? req.body.data : '';
 
     if (name.length === 0) {
-      throw new APIError(400, 'Missing name');
+      res.status(400).json({ error: 'Missing name' });
+      return;
     }
     if (!Object.values(VALID_FILE_TYPES).includes(type)) {
-      throw new APIError(400, 'Missing type');
+      res.status(400).json({ error: 'Missing type' });
+      return;
     }
     if (!req.body.data && type !== VALID_FILE_TYPES.folder) {
-      throw new APIError(400, 'Missing data');
+      res.status(400).json({ error: 'Missing data' });
+      return;
     }
     if (parentId !== ROOT_FOLDER_ID) {
       const file = await (await dbClient.filesCollection())
         .findOne({ _id: new mongoDBCore.BSON.ObjectId(parentId) });
 
       if (!file) {
-        throw new APIError(400, 'Parent not found');
+        res.status(400).json({ error: 'Parent not found' });
+        return;
       }
       if (file.type !== VALID_FILE_TYPES.folder) {
-        throw new APIError(400, 'Parent is not a folder');
+        res.status(400).json({ error: 'Parent is not a folder' });
+        return;
       }
     }
     const userId = user._id.toString();
@@ -108,7 +112,8 @@ export default class FilesController {
       });
 
     if (!file) {
-      throw new APIError(404, 'Not found');
+      res.status(404).json({ error: 'Not found' });
+      return;
     }
     res.status(200).json({
       id,
@@ -161,7 +166,8 @@ export default class FilesController {
       .findOne(fileFilter);
 
     if (!file) {
-      throw new APIError(404, 'Not found');
+      res.status(404).json({ error: 'Not found' });
+      return;
     }
     await (await dbClient.filesCollection())
       .updateOne(fileFilter, { isPublic: true });
@@ -187,7 +193,8 @@ export default class FilesController {
       .findOne(fileFilter);
 
     if (!file) {
-      throw new APIError(404, 'Not found');
+      res.status(404).json({ error: 'Not found' });
+      return;
     }
     await (await dbClient.filesCollection())
       .updateOne(fileFilter, { isPublic: false });
@@ -216,10 +223,12 @@ export default class FilesController {
       .findOne(fileFilter);
 
     if (!file || (!file.isPublic && (file.userId !== userId))) {
-      throw new APIError(404, 'Not found');
+      res.status(404).json({ error: 'Not found' });
+      return;
     }
     if (file.type === VALID_FILE_TYPES.folder) {
-      throw new APIError(400, 'A folder doesn\'t have content');
+      res.status(400).json({ error: 'A folder doesn\'t have content' });
+      return;
     }
     let filePath = file.localPath;
     if (size) {
@@ -227,7 +236,8 @@ export default class FilesController {
     }
     const fileInfo = await statAsync(filePath);
     if (!fileInfo.isFile()) {
-      throw new APIError(404, 'Not found');
+      res.status(404).json({ error: 'Not found' });
+      return;
     }
     res.status(200).sendFile(
       filePath,
