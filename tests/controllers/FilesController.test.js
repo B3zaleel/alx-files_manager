@@ -322,4 +322,66 @@ describe('+ FilesController', () => {
     });
   });
 
+  describe('+ GET: /files/:id', () => {
+    it('+ Fails with no "X-Token" header field', function (done) {
+      request.get('/files/444555666')
+        .expect(401)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.body).to.deep.eql({ error: 'Unauthorized' });
+          done();
+        });
+    });
+
+    it('+ Fails for a non-existent user', function (done) {
+      this.timeout(5000);
+      request.get('/files/444555666')
+        .set('X-Token', 'raboof')
+        .expect(401)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body).to.deep.eql({ error: 'Unauthorized' });
+          done();
+        });
+    });
+
+    it('+ Fails if file is not linked to user', function (done) {
+      this.timeout(5000);
+      request.get('/files/444555666')
+        .set('X-Token', token)
+        .expect(404)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            console.error(requestErr);
+            return done(requestErr);
+          }
+          expect(res.body).to.deep.eql({ error: 'Not found' });
+          done();
+        });
+    });
+
+    it('+ Succeeds if file is linked to user', function (done) {
+      this.timeout(5000);
+      request.get(`/files/${mockFiles[0].id}`)
+        .set('X-Token', token)
+        .expect(200)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body.id).to.exist;
+          expect(res.body.userId).to.exist;
+          expect(res.body.id).to.eql(mockFiles[0].id);
+          expect(res.body.name).to.eql(mockFiles[0].name);
+          expect(res.body.type).to.eql(mockFiles[0].type);
+          expect(res.body.isPublic).to.eql(false);
+          expect(res.body.parentId).to.eql(0);
+          done();
+        });
+    });
+  });
 });
