@@ -384,4 +384,91 @@ describe('+ FilesController', () => {
         });
     });
   });
+
+  describe('+ GET: /files', () => {
+    it('+ Fails with no "X-Token" header field', function (done) {
+      request.get('/files')
+        .expect(401)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.body).to.deep.eql({ error: 'Unauthorized' });
+          done();
+        });
+    });
+
+    it('+ Fails for a non-existent user', function (done) {
+      this.timeout(5000);
+      request.get('/files')
+        .set('X-Token', 'raboof')
+        .expect(401)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body).to.deep.eql({ error: 'Unauthorized' });
+          done();
+        });
+    });
+
+    it('+ Fetches first page with no page query', function (done) {
+      this.timeout(5000);
+      request.get('/files')
+        .set('X-Token', token)
+        .expect(200)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body.length).to.eql(2);
+          expect(res.body.some((file) => file.name === mockFiles[0].name)).to.be.true;
+          expect(res.body.some((file) => file.name === mockFiles[1].name)).to.be.true;
+          done();
+        });
+    });
+
+    it('+ Fetches first page with no page query and parentId', function (done) {
+      this.timeout(5000);
+      request.get(`/files?parentId=${mockFiles[1].id}`)
+        .set('X-Token', token)
+        .expect(200)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body.length).to.eql(1);
+          expect(res.body.some((file) => file.name === mockFiles[2].name)).to.be.true;
+          done();
+        });
+    });
+
+    it('+ Returns empty list for a page that is out of bounds', function (done) {
+      this.timeout(5000);
+      request.get('/files?page=5')
+        .set('X-Token', token)
+        .expect(200)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body).to.eql([]);
+          done();
+        });
+    });
+
+    it('+ Returns empty list for unknown parentId', function (done) {
+      this.timeout(5000);
+      request.get('/files?parentId=34556ea6727277193884848e')
+        .set('X-Token', token)
+        .expect(200)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body).to.eql([]);
+          done();
+        });
+    });
+  });
 });
