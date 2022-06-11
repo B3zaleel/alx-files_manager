@@ -79,4 +79,45 @@ describe('+ AuthController', () => {
     });
   });
 
+  describe('+ GET: /disconnect', () => {
+    it('+ Fails with no "X-Token" header field', function (done) {
+      this.timeout(5000);
+      request.get('/disconnect')
+        .expect(401)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body).to.deep.eql({ error: 'Unauthorized' });
+          done();
+        });
+    });
+
+    it('+ Fails for a non-existent user', function (done) {
+      this.timeout(5000);
+      request.get('/disconnect')
+        .set('X-Token', 'raboof')
+        .expect(401)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body).to.deep.eql({ error: 'Unauthorized' });
+          done();
+        });
+    });
+
+    it('+ Succeeds with a valid "X-Token" field', function (done) {
+      request.get('/disconnect')
+        .set('X-Token', token)
+        .expect(204)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.body).to.deep.eql({});
+          done();
+        });
+    });
+  });
 });
