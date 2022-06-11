@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 import dbClient from '../../utils/db';
 
-describe('dbClient utility', () => {
+describe('+ DBClient utility', () => {
   before(function (done) {
     this.timeout(10000);
     Promise.all([dbClient.usersCollection(), dbClient.filesCollection()])
@@ -13,15 +13,15 @@ describe('dbClient utility', () => {
     setTimeout(done, 5000);
   });
 
-  it('client is alive', () => {
+  it('+ Client is alive', () => {
     expect(dbClient.isAlive()).to.equal(true);
   });
 
-  it('nbUsers are 0', async () => {
+  it('+ nbUsers returns the correct value', async () => {
     expect(await dbClient.nbUsers()).to.equal(0);
   });
 
-  it('nbFiles are 0', async () => {
+  it('+ nbFiles returns the correct value', async () => {
     expect(await dbClient.nbFiles()).to.equal(0);
   });
 });
