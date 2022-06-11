@@ -9,8 +9,8 @@
   "scripts": {
     "lint": "./node_modules/.bin/eslint",
     "lint-nt": "./node_modules/.bin/eslint.cmd",
-    "check-lint": "lint controllers/ routes/ utils/ server.js worker.js",
-    "check-lint-nt": "lint-nt controllers/ routes/ utils/ server.js worker.js",
+    "check-lint": "lint controllers/ libs/ middlewares/ routes/ utils/ server.js worker.js",
+    "check-lint-nt": "yarn lint-nt controllers/ libs/ middlewares/ routes/ utils/ server.js worker.js",
     "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./server.js",
     "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
     "dev": "nodemon --exec babel-node --presets @babel/preset-env",
