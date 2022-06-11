@@ -34,4 +34,4 @@ const injectRoutes = (api) => {
   api.use(errorResponse);
 };
 
-module.exports = injectRoutes;
+export default injectRoutes;

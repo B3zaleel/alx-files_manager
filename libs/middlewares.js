@@ -8,4 +8,4 @@ const injectMiddlewares = (api) => {
   api.use(express.json());
 };
 
-module.exports = injectMiddlewares;
+export default injectMiddlewares;

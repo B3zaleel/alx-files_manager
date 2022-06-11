@@ -1,4 +1,4 @@
-module.exports = (api) => {
+const startServer = (api) => {
   let port;
   const env = process.env.ENV || 'dev';
 
@@ -11,3 +11,5 @@ module.exports = (api) => {
     console.log(`[${env}] API has started listening at port:${port}`);
   });
 };
+
+export default startServer;
