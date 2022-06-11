@@ -15,6 +15,6 @@ export default class AuthController {
     const token = req.headers['X-Token'];
 
     await redisClient.del(`auth_${token}`);
-    res.status(204).json({});
+    res.status(204).send();
   }
 }
