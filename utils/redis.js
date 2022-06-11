@@ -42,16 +42,17 @@ class RedisClient {
    * @param {String} key The key of the item to store.
    * @param {String | Number | Boolean} value The item to store.
    * @param {Number} duration The expiration time of the item in seconds.
-   * @returns {String | Object}
+   * @returns {Promise<void>}
    */
   async set(key, value, duration) {
-    promisify(this.client.SETEX)
+    await promisify(this.client.SETEX)
       .bind(this.client)(key, duration, value);
   }
 
   /**
    * Removes the value of a given key.
    * @param {String} key The key of the item to remove.
+   * @returns {Promise<void>}
    */
   async del(key) {
     await promisify(this.client.DEL).bind(this.client)(key);
