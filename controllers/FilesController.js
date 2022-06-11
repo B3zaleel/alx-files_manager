@@ -169,12 +169,12 @@ export default class FilesController {
         : new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
     };
 
-    const files = await (await dbClient.filesCollection())
+    const files = await (await (await dbClient.filesCollection())
       .aggregate([
         { $match: filesFilter },
         { $skip: page * MAX_FILES_PER_PAGE },
         { $limit: MAX_FILES_PER_PAGE },
-      ]);
+      ])).toArray();
     const pageFiles = files.map((file) => ({
       id: file._id.toString(),
       userId: file.userId.toString(),
