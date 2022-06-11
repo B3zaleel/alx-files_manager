@@ -4,7 +4,7 @@ import AppController from '../controllers/AppController';
 import AuthController from '../controllers/AuthController';
 import UsersController from '../controllers/UsersController';
 import FilesController from '../controllers/FilesController';
-import { basicAuthenticate, xTokenAuthenticate } from '../middlewares/auth';
+import { xTokenAuthenticate } from '../middlewares/auth';
 import { APIError, errorResponse } from '../middlewares/error';
 
 /**
@@ -15,8 +15,8 @@ const injectRoutes = (api) => {
   api.get('/status', AppController.getStatus);
   api.get('/stats', AppController.getStats);
 
-  api.get('/connect', basicAuthenticate, AuthController.getConnect);
-  api.get('/disconnect', xTokenAuthenticate, AuthController.getDisconnect);
+  api.get('/connect', AuthController.getConnect);
+  api.get('/disconnect', AuthController.getDisconnect);
 
   api.post('/users', UsersController.postNew);
   api.get('/users/me', xTokenAuthenticate, UsersController.getMe);
