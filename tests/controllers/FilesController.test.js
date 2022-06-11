@@ -276,7 +276,6 @@ describe('+ FilesController', () => {
 
     it('+ Fails if parentId is set and is not of a folder or 0', function (done) {
       this.timeout(5000);
-      console.log('file id:', mockFiles[0].id);
       request.post('/files')
         .set('X-Token', token)
         .send({
