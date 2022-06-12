@@ -33,7 +33,7 @@ const isValidId = (id) => {
     [97, 102], // a - f
     [65, 70], // A - F
   ];
-  if (typeof id !== 'string' || id.length != size) {
+  if (typeof id !== 'string' || id.length !== size) {
     return false;
   }
   while (i < size) {
