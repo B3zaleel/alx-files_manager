@@ -204,7 +204,7 @@ export default class FilesController {
       return;
     }
     await (await dbClient.filesCollection())
-      .updateOne(fileFilter, { isPublic: true });
+      .updateOne(fileFilter, { $set: { isPublic: true } });
     res.status(200).json({
       id,
       userId,
@@ -233,7 +233,7 @@ export default class FilesController {
       return;
     }
     await (await dbClient.filesCollection())
-      .updateOne(fileFilter, { isPublic: false });
+      .updateOne(fileFilter, { $set: { isPublic: false } });
     res.status(200).json({
       id,
       userId,
