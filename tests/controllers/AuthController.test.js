@@ -61,6 +61,34 @@ describe('+ AuthController', () => {
         });
     });
 
+    it('+ Fails with a valid email and wrong password', function (done) {
+      this.timeout(5000);
+      request.get('/connect')
+        .auth(mockUser.email, 'raboof', { type: 'basic' })
+        .expect(401)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.body).to.deep.eql({ error: 'Unauthorized' });
+          done();
+        });
+    });
+
+    it('+ Fails with an invalid email and valid password', function (done) {
+      this.timeout(5000);
+      request.get('/connect')
+        .auth('zoro@strawhat.com', mockUser.password, { type: 'basic' })
+        .expect(401)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.body).to.deep.eql({ error: 'Unauthorized' });
+          done();
+        });
+    });
+
     it('+ Succeeds for an existing user', function (done) {
       this.timeout(5000);
       request.get('/connect')
