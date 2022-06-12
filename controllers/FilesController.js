@@ -131,7 +131,7 @@ export default class FilesController {
 
   static async getShow(req, res) {
     const { user } = req;
-    const { id } = req.params;
+    const id = req.params ? req.params.id : NULL_ID;
     const userId = user._id.toString();
     const file = await (await dbClient.filesCollection())
       .findOne({
@@ -162,13 +162,15 @@ export default class FilesController {
    */
   static async getIndex(req, res) {
     const { user } = req;
-    const parentId = req.query.parentId || ROOT_FOLDER_ID;
-    const page = Number.parseInt(req.query.page || 0, 10);
+    const parentId = req.query
+      ? req.query.parentId || ROOT_FOLDER_ID.toString()
+      : ROOT_FOLDER_ID.toString();
+    const page = req.query ? Number.parseInt(req.query.page || 0, 10) : 0;
     const userId = user._id.toString();
     const filesFilter = {
       userId: new mongoDBCore.BSON.ObjectId(userId),
-      parentId: (parentId === ROOT_FOLDER_ID) || (parentId === ROOT_FOLDER_ID.toString())
-        ? ROOT_FOLDER_ID.toString()
+      parentId: parentId === ROOT_FOLDER_ID.toString()
+        ? parentId
         : new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
     };
 
