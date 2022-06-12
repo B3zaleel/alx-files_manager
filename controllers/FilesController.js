@@ -4,7 +4,7 @@ import { tmpdir } from 'os';
 import { promisify } from 'util';
 import Queue from 'bull/lib/queue';
 import { v4 as uuidv4 } from 'uuid';
-import { mkdir, writeFile, stat } from 'fs';
+import { mkdir, writeFile, stat, realpath } from 'fs';
 import { join as joinPath } from 'path';
 import { Request, Response } from 'express';
 import { contentType } from 'mime-types';
@@ -22,6 +22,7 @@ const DEFAULT_ROOT_FOLDER = 'files_manager';
 const mkDirAsync = promisify(mkdir);
 const writeFileAsync = promisify(writeFile);
 const statAsync = promisify(stat);
+const realpathAsync = promisify(realpath);
 const MAX_FILES_PER_PAGE = 20;
 const fileQueue = new Queue('thumbnail generation');
 const NULL_ID = Buffer.alloc(24, '0').toString('utf-8');
@@ -262,7 +263,7 @@ export default class FilesController {
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
 
-    if (!file || (!file.isPublic && (file.userId !== userId))) {
+    if (!file || (!file.isPublic && (file.userId.toString() !== userId))) {
       res.status(404).json({ error: 'Not found' });
       return;
     }
@@ -279,9 +280,10 @@ export default class FilesController {
       res.status(404).json({ error: 'Not found' });
       return;
     }
+    const absoluteFilePath = await realpathAsync(filePath);
     res.status(200).sendFile(
-      filePath,
-      { 'Content-Type': contentType(file.name) },
+      absoluteFilePath,
+      { headers: { 'Content-Type': contentType(file.name) } },
     );
   }
 }
