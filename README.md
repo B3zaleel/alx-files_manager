@@ -1,6 +1,6 @@
 # Files Manager
 
-A simple file management API built with Node.js.
+A simple file management API built with Express, MongoDB, Redis, Bull, and Node.js.
 
 ## Requirements
 
@@ -17,9 +17,14 @@ A simple file management API built with Node.js.
 
 The required environment variables should be stored in a file named `.env` and each line should have the format `Name=Value`. The table below lists the environment variables that will be used by this server:
 
-| Name | Description |
-|:-|:-|
-| GOOGLE_MAIL_SENDER | The email address of the account responsible for sending emails to users. |
+| Name | Required | Description |
+|:-|:-|:-|
+| GOOGLE_MAIL_SENDER | Yes | The email address of the account responsible for sending emails to users. |
+| PORT | No (Default: `5000`)| The port the server should listen at. |
+| DB_HOST | No (Default: `localhost`)| The database host. |
+| DB_PORT | No (Default: `27017`)| The database port. |
+| DB_DATABASE | No (Default: `files_manager`)| The database name. |
+| FOLDER_PATH | No (Default for Linux: `/tmp/files_manager`) | The local folder where files are saved. |
 
 ## Installation
 
@@ -32,7 +37,8 @@ Start the Redis and MongoDB services on your system and run `yarn start-server` 
 
 ## Tests
 
-Run `yarn test` or `npm run test` to execute the e2e tests.
++ Create a separate `.env` file for the tests named `.env.test` and store the value of the environment variables for the testing event in it.
++ Run `yarn test` or `npm run test` to execute the E2E tests.
 
 ## Documentation
 
