@@ -30,6 +30,10 @@ The required environment variables should be stored in a file named `.env` and e
 
 Start the Redis and MongoDB services on your system and run `yarn start-server` or `npm run start-server`.
 
+## Tests
+
+Run `yarn test` or `npm run test` to execute the e2e tests.
+
 ## Documentation
 
 + TODO: Generate OpenAPI documentation with [**apidoc**](https://www.npmjs.com/package/apidoc).
