@@ -597,4 +597,87 @@ describe('+ FilesController', () => {
         });
     });
   });
+
+  describe('+ GET: /files/:id/data', () => {
+    it('+ Fails if the file does not exist', function (done) {
+      request.get('/files/444555666/data')
+        .expect(404)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.body).to.deep.eql({ error: 'Not found' });
+          done();
+        });
+    });
+
+    it('+ Fails if the file is not public and not requested by the owner', function (done) {
+      request.get(`/files/${mockFiles[0].id}/data`)
+        .expect(404)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.body).to.deep.eql({ error: 'Not found' });
+          done();
+        });
+    });
+
+    it('+ Succeeds if the file is not public but requested by the owner', function (done) {
+      request.get(`/files/${mockFiles[0].id}/data`)
+        .set('X-Token', token)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.headers['content-type']).to.contain('text/plain');
+          expect(res.text).to.eql(mockFiles[0].data);
+          done();
+        });
+    });
+
+    it('+ Fails if the file is a folder', function (done) {
+      this.timeout(5000);
+      request.get(`/files/${mockFiles[1].id}/data`)
+        .expect(400)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            console.error(requestErr);
+            return done(requestErr);
+          }
+          expect(res.body).to.deep.eql({ error: 'A folder doesn\'t have content' });
+          done();
+        });
+    });
+
+    it('+ Succeeds if the file is not public but requested by the owner [alt]', function (done) {
+      request.get(`/files/${mockFiles[2].id}/data`)
+        .set('X-Token', token)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.headers['content-type']).to.contain('text/markdown');
+          expect(res.text).to.eql(mockFiles[2].data);
+          done();
+        });
+    });
+
+    it('+ Fails if the file is not locally present', function (done) {
+      this.timeout(5000);
+      emptyFolder(process.env.FOLDER_PATH);
+      request.get(`/files/${mockFiles[2].id}/data`)
+        .expect(404)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            console.error(requestErr);
+            return done(requestErr);
+          }
+          expect(res.body).to.deep.eql({ error: 'Not found' });
+          done();
+        });
+    });
+  });
 });
