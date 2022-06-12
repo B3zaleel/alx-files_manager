@@ -283,9 +283,7 @@ export default class FilesController {
       return;
     }
     const absoluteFilePath = await realpathAsync(filePath);
-    res.status(200).sendFile(
-      absoluteFilePath,
-      { headers: { 'Content-Type': contentType(file.name) } },
-    );
+    res.setHeader('Content-Type', contentType(file.name));
+    res.status(200).sendFile(absoluteFilePath);
   }
 }
