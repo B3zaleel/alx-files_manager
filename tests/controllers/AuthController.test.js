@@ -115,6 +115,9 @@ describe('+ AuthController', () => {
             return done(err);
           }
           expect(res.body).to.deep.eql({});
+          expect(res.text).to.eql('');
+          expect(res.headers['content-type']).to.not.exist;
+          expect(res.headers['content-length']).to.not.exist;
           done();
         });
     });
