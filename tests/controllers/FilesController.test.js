@@ -457,6 +457,20 @@ describe('+ FilesController', () => {
         });
     });
 
+    it('+ Returns empty list for a parentId of a file', function (done) {
+      this.timeout(5000);
+      request.get(`/files?parentId=${mockFiles[0].id}`)
+        .set('X-Token', token)
+        .expect(200)
+        .end((requestErr, res) => {
+          if (requestErr) {
+            return done(requestErr);
+          }
+          expect(res.body).to.eql([]);
+          done();
+        });
+    });
+
     it('+ Returns empty list for unknown parentId', function (done) {
       this.timeout(5000);
       request.get('/files?parentId=34556ea6727277193884848e')
