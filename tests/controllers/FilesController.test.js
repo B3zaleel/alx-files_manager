@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 import dbClient from '../../utils/db';
 import { join as joinPath } from 'path';
-import { existsSync, readdirSync, unlinkSync, statSync } from 'fs';
+import { readdirSync, unlinkSync, statSync } from 'fs';
 
 describe('+ FilesController', () => {
   const mockUser = {
