@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 import dbClient from '../../utils/db';
 import { join as joinPath } from 'path';
-import { readdirSync, unlinkSync, statSync } from 'fs';
+import { existsSync, readdirSync, unlinkSync, statSync } from 'fs';
 
 describe('+ FilesController', () => {
   const mockUser = {
@@ -49,6 +49,9 @@ describe('+ FilesController', () => {
   ];
   let token = '';
   const emptyFolder = (name) => {
+    if (!existsSync(name)) {
+      return;
+    }
     for (const fileName of readdirSync(name)) {
       const filePath = joinPath(name, fileName);
       if (statSync(filePath).isFile) {
