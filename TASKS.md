@@ -186,7 +186,7 @@
     + Based on `size`, return the correct local file.
     + If the local file doesn't exist, return an error `Not found` with a status code 404.
 
-+ [ ] 10. **Tests!**
++ [x] 10. **Tests!**
   + Of course, a strong and stable project can not be good without tests.
   + Create tests for `redisClient` and `dbClient`.
   + Create tests for each endpoint:
