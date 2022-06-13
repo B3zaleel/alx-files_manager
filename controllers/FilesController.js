@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import Queue from 'bull/lib/queue';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  mkdir, writeFile, stat, realpath,
+  mkdir, writeFile, stat, existsSync, realpath,
 } from 'fs';
 import { join as joinPath } from 'path';
 import { Request, Response } from 'express';
@@ -283,8 +283,13 @@ export default class FilesController {
     if (size) {
       filePath = `${file.localPath}_${size}`;
     }
-    const fileInfo = await statAsync(filePath);
-    if (!fileInfo.isFile()) {
+    if (existsSync(filePath)) {
+      const fileInfo = await statAsync(filePath);
+      if (!fileInfo.isFile()) {
+        res.status(404).json({ error: 'Not found' });
+        return;
+      }
+    } else {
       res.status(404).json({ error: 'Not found' });
       return;
     }
