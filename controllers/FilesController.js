@@ -183,18 +183,21 @@ export default class FilesController {
         { $match: filesFilter },
         { $skip: page * MAX_FILES_PER_PAGE },
         { $limit: MAX_FILES_PER_PAGE },
+        {
+          $project: {
+            _id: 0,
+            id: '$_id',
+            userId: '$userId',
+            name: '$name',
+            type: '$type',
+            isPublic: '$isPublic',
+            parentId: {
+              $cond: { if: { $eq: ['$parentId', '0'] }, then: 0, else: '$parentId' },
+            },
+          },
+        },
       ])).toArray();
-    const pageFiles = files.map((file) => ({
-      id: file._id.toString(),
-      userId: file.userId.toString(),
-      name: file.name,
-      type: file.type,
-      isPublic: file.isPublic,
-      parentId: file.parentId === ROOT_FOLDER_ID.toString()
-        ? 0
-        : file.parentId.toString(),
-    }));
-    res.status(200).json(pageFiles);
+    res.status(200).json(files);
   }
 
   static async putPublish(req, res) {
