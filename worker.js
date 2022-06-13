@@ -35,7 +35,7 @@ fileQueue.process(async (job, done) => {
   const file = await (await dbClient.filesCollection())
     .findOne({
       _id: new mongoDBCore.BSON.ObjectId(fileId),
-      userId,
+      userId: new mongoDBCore.BSON.ObjectId(userId),
     });
   if (!file) {
     throw new Error('File not found');
