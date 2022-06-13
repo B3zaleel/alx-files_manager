@@ -77,7 +77,7 @@ export default class FilesController {
       res.status(400).json({ error: 'Missing data' });
       return;
     }
-    if (parentId !== ROOT_FOLDER_ID) {
+    if ((parentId !== ROOT_FOLDER_ID) && (parentId !== ROOT_FOLDER_ID.toString())) {
       const file = await (await dbClient.filesCollection())
         .findOne({
           _id: new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
@@ -103,7 +103,9 @@ export default class FilesController {
       name,
       type,
       isPublic,
-      parentId: parentId === ROOT_FOLDER_ID ? '0' : new mongoDBCore.BSON.ObjectId(parentId),
+      parentId: (parentId === ROOT_FOLDER_ID) || (parentId === ROOT_FOLDER_ID.toString())
+        ? '0'
+        : new mongoDBCore.BSON.ObjectId(parentId),
     };
     await mkDirAsync(baseDir, { recursive: true });
     if (type !== VALID_FILE_TYPES.folder) {
@@ -125,7 +127,9 @@ export default class FilesController {
       name,
       type,
       isPublic,
-      parentId,
+      parentId: (parentId === ROOT_FOLDER_ID) || (parentId === ROOT_FOLDER_ID.toString())
+        ? 0
+        : parentId,
     });
   }
 
