@@ -28,7 +28,7 @@ export default class UsersController {
       .insertOne({ email, password: sha1(password) });
     const userId = insertionInfo.insertedId.toString();
 
-    userQueue.add(`Welcome mail [${userId}]`, { userId });
+    userQueue.add({ userId });
     res.status(201).json({ email, id: userId });
   }
 
