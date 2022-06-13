@@ -1,9 +1,13 @@
 /* eslint-disable import/no-named-as-default */
-import dbClient from '../../utils/db';
+import { tmpdir } from 'os';
 import { join as joinPath } from 'path';
 import { existsSync, readdirSync, unlinkSync, statSync } from 'fs';
+import dbClient from '../../utils/db';
 
 describe('+ FilesController', () => {
+  const baseDir = `${process.env.FOLDER_PATH || ''}`.trim().length > 0
+    ? process.env.FOLDER_PATH.trim()
+    : joinPath(tmpdir(), DEFAULT_ROOT_FOLDER);
   const mockUser = {
     email: 'katakuri@bigmom.com',
     password: 'mochi_mochi_whole_cake',
@@ -108,14 +112,14 @@ describe('+ FilesController', () => {
   before(function (done) {
     this.timeout(10000);
     emptyDatabaseCollections(() => signUp(mockUser, () => signIn(mockUser, done)));
-    emptyFolder(process.env.FOLDER_PATH);
+    emptyFolder(baseDir);
   });
 
   after(function (done) {
     this.timeout(10000);
     setTimeout(() => {
       emptyDatabaseCollections(done);
-      emptyFolder(process.env.FOLDER_PATH);
+      emptyFolder(baseDir);
     });
   });
 
@@ -684,7 +688,7 @@ describe('+ FilesController', () => {
 
     it('+ Fails if the file is not locally present', function (done) {
       this.timeout(5000);
-      emptyFolder(process.env.FOLDER_PATH);
+      emptyFolder(baseDir);
       request.get(`/files/${mockFiles[2].id}/data`)
         .expect(404)
         .end((requestErr, res) => {
