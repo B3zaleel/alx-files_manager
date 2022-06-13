@@ -166,10 +166,10 @@ export default class FilesController {
    */
   static async getIndex(req, res) {
     const { user } = req;
-    const parentId = req.query
-      ? req.query.parentId || ROOT_FOLDER_ID.toString()
-      : ROOT_FOLDER_ID.toString();
-    const page = req.query ? Number.parseInt(req.query.page || 0, 10) : 0;
+    const parentId = req.query.parentId || ROOT_FOLDER_ID.toString();
+    const page = /\d+/.test((req.query.page || '').toString())
+      ? Number.parseInt(req.query.page, 10)
+      : 0;
     const userId = user._id.toString();
     const filesFilter = {
       userId: new mongoDBCore.BSON.ObjectId(userId),
