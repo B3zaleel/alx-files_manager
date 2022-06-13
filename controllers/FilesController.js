@@ -119,7 +119,7 @@ export default class FilesController {
     // start thumbnail generation worker
     if (type === VALID_FILE_TYPES.image) {
       const jobName = `Image thumbnail [${userId}-${fileId}]`;
-      fileQueue.add(jobName, { userId, fileId });
+      fileQueue.add({ userId, fileId, name: jobName });
     }
     res.status(201).json({
       id: fileId,
