@@ -161,12 +161,12 @@ export default class FilesController {
     const page = /\d+/.test((req.query.page || '').toString())
       ? Number.parseInt(req.query.page, 10)
       : 0;
-    const filesFilter = { userId: user._id };
-    if (req.query.parentId) {
-      filesFilter.parentId = parentId === ROOT_FOLDER_ID.toString()
+    const filesFilter = {
+      userId: user._id,
+      parentId: parentId === ROOT_FOLDER_ID.toString()
         ? parentId
-        : new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID);
-    }
+        : new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
+    };
 
     const files = await (await (await dbClient.filesCollection())
       .aggregate([
