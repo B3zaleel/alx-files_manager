@@ -162,6 +162,7 @@ export default class FilesController {
       ? Number.parseInt(req.query.page, 10)
       : 0;
     const filesFilter = {
+      userId: user._id,
       parentId: parentId === ROOT_FOLDER_ID.toString()
         ? parentId
         : new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
@@ -170,6 +171,7 @@ export default class FilesController {
     const files = await (await (await dbClient.filesCollection())
       .aggregate([
         { $match: filesFilter },
+        { $sort: { _id: -1 } },
         { $skip: page * MAX_FILES_PER_PAGE },
         { $limit: MAX_FILES_PER_PAGE },
         {
