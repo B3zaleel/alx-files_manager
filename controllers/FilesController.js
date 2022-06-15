@@ -192,7 +192,6 @@ export default class FilesController {
             parentId: {
               $cond: { if: { $eq: ['$parentId', '0'] }, then: 0, else: '$parentId' },
             },
-            localPath: 0,
           },
         },
       ])).toArray();
