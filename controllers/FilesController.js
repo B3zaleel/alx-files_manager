@@ -184,7 +184,6 @@ export default class FilesController {
 
       if (!folder || folder.type !== VALID_FILE_TYPES.folder) {
         res.status(200).json([]);
-        return;
       }
     }
 
