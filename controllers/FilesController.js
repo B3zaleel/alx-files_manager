@@ -175,6 +175,17 @@ export default class FilesController {
         ? parentId
         : new ObjectId(isValidId(parentId) ? parentId : NULL_ID),
     };
+    if (parentId !== ROOT_FOLDER_ID.toString()) {
+      const folderFilter = {
+        _id: new ObjectId(isValidId(parentId) ? parentId : NULL_ID),
+      };
+      const folder = await (await dbClient.filesCollection())
+        .findOne(folderFilter);
+
+      if (!folder || folder.type !== VALID_FILE_TYPES.folder) {
+        res.status(200).json([]);
+      }
+    }
 
     const files = await (await (await dbClient.filesCollection())
       .aggregate([
