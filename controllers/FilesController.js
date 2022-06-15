@@ -10,7 +10,7 @@ import {
 import { join as joinPath } from 'path';
 import { Request, Response } from 'express';
 import { contentType } from 'mime-types';
-import mongoDBCore from 'mongodb/lib/core';
+import { ObjectId } from 'mongodb';
 import dbClient from '../utils/db';
 import { getUserFromXToken } from '../utils/auth';
 
@@ -80,7 +80,7 @@ export default class FilesController {
     if ((parentId !== ROOT_FOLDER_ID) && (parentId !== ROOT_FOLDER_ID.toString())) {
       const file = await (await dbClient.filesCollection())
         .findOne({
-          _id: new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
+          _id: new ObjectId(isValidId(parentId) ? parentId : NULL_ID),
         });
 
       if (!file) {
@@ -99,13 +99,13 @@ export default class FilesController {
     // default baseDir == '/tmp/files_manager'
     // or (on Windows) '%USERPROFILE%/AppData/Local/Temp/files_manager';
     const newFile = {
-      userId: new mongoDBCore.BSON.ObjectId(userId),
+      userId: new ObjectId(userId),
       name,
       type,
       isPublic,
       parentId: (parentId === ROOT_FOLDER_ID) || (parentId === ROOT_FOLDER_ID.toString())
         ? '0'
-        : new mongoDBCore.BSON.ObjectId(parentId),
+        : new ObjectId(parentId),
     };
     await mkDirAsync(baseDir, { recursive: true });
     if (type !== VALID_FILE_TYPES.folder) {
@@ -139,8 +139,8 @@ export default class FilesController {
     const userId = user._id.toString();
     const file = await (await dbClient.filesCollection())
       .findOne({
-        _id: new mongoDBCore.BSON.ObjectId(isValidId(id) ? id : NULL_ID),
-        userId: new mongoDBCore.BSON.ObjectId(isValidId(userId) ? userId : NULL_ID),
+        _id: new ObjectId(isValidId(id) ? id : NULL_ID),
+        userId: new ObjectId(isValidId(userId) ? userId : NULL_ID),
       });
 
     if (!file) {
@@ -173,7 +173,7 @@ export default class FilesController {
     const filesFilter = {
       parentId: parentId === ROOT_FOLDER_ID.toString()
         ? parentId
-        : new mongoDBCore.BSON.ObjectId(isValidId(parentId) ? parentId : NULL_ID),
+        : new ObjectId(isValidId(parentId) ? parentId : NULL_ID),
     };
 
     const files = await (await (await dbClient.filesCollection())
@@ -203,8 +203,8 @@ export default class FilesController {
     const { id } = req.params;
     const userId = user._id.toString();
     const fileFilter = {
-      _id: new mongoDBCore.BSON.ObjectId(isValidId(id) ? id : NULL_ID),
-      userId: new mongoDBCore.BSON.ObjectId(isValidId(userId) ? userId : NULL_ID),
+      _id: new ObjectId(isValidId(id) ? id : NULL_ID),
+      userId: new ObjectId(isValidId(userId) ? userId : NULL_ID),
     };
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
@@ -232,8 +232,8 @@ export default class FilesController {
     const { id } = req.params;
     const userId = user._id.toString();
     const fileFilter = {
-      _id: new mongoDBCore.BSON.ObjectId(isValidId(id) ? id : NULL_ID),
-      userId: new mongoDBCore.BSON.ObjectId(isValidId(userId) ? userId : NULL_ID),
+      _id: new ObjectId(isValidId(id) ? id : NULL_ID),
+      userId: new ObjectId(isValidId(userId) ? userId : NULL_ID),
     };
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
@@ -267,7 +267,7 @@ export default class FilesController {
     const size = req.query.size || null;
     const userId = user ? user._id.toString() : '';
     const fileFilter = {
-      _id: new mongoDBCore.BSON.ObjectId(isValidId(id) ? id : NULL_ID),
+      _id: new ObjectId(isValidId(id) ? id : NULL_ID),
     };
     const file = await (await dbClient.filesCollection())
       .findOne(fileFilter);
