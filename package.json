@@ -14,7 +14,9 @@
     "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./server.js",
     "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
     "dev": "nodemon --exec babel-node --presets @babel/preset-env",
-    "test": "./node_modules/.bin/mocha --opts mocha.opts tests/**/*.js"
+    "test": "./node_modules/.bin/mocha --opts mocha.opts tests/**/*.js",
+    "test-with-coverage": "nyc --reporter=text ./node_modules/.bin/mocha --opts mocha.opts tests/**/*.js",
+    "coveralls": "nyc ./node_modules/.bin/mocha --opts mocha.opts tests/**/*.js && nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
     "bull": "^3.16.0",
@@ -38,12 +40,15 @@
     "@babel/register": "^7.8.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "coveralls": "^3.1.1",
     "eslint": "^6.4.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^22.17.0",
     "mocha": "^6.2.2",
+    "mocha-lcov-reporter": "^1.3.0",
     "nodemon": "^2.0.2",
+    "nyc": "^15.1.0",
     "request": "^2.88.0",
     "sinon": "^7.5.0",
     "supertest": "^6.2.3"
