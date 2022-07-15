@@ -108,3 +108,4 @@ dist
 credentials.json
 *secret*
 token.json
+.coveralls.yml
